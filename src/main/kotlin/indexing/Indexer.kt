@@ -29,16 +29,14 @@ class Indexer(indexPath: String, analyzer: Analyzer, similarity: Similarity) {
         this.writer = IndexWriter(FSDirectory.open(indexDirectory.toPath()), iwc)
     }
 
-    /**
-     * @see {https://lucene.apache.org/core/8_2_0/core/index.html?org/apache/lucene/document/TextField.html}
-     */
-
     fun index(datasets: List<Dataset>) {
+
+        var indexed = 0
 
         for (dataset in datasets) {
             val doc = Document()
 
-            doc.add(NumericField("ID", dataset.id))
+            doc.add(MetadataField("ID", dataset.id))
             doc.add(MetadataField("TITLE", dataset.title))
             doc.add(MetadataField("DESCRIPTION", dataset.description))
             doc.add(MetadataField("AUTHOR", dataset.author))
@@ -49,16 +47,20 @@ class Indexer(indexPath: String, analyzer: Analyzer, similarity: Similarity) {
             doc.add(MetadataField("ENTITIES", dataset.classes.joinToString()))
             doc.add(MetadataField("PROPERTIES", dataset.classes.joinToString()))
 
-            doc.add(NumericField("URLS-DOWNLOADED", dataset.downloadedURLs.count().toString()))
-            doc.add(NumericField("URLS-FAILED", dataset.downloadedURLs.count().toString()))
-            doc.add(NumericField("USED-FILES", dataset.usedFiles.count().toString()))
-            doc.add(NumericField("UNUSED-FILES", dataset.unusedFiles.count().toString()))
+            doc.add(MetadataField("URLS-DOWNLOADED", dataset.downloadedURLs.count().toString()))
+            doc.add(MetadataField("URLS-FAILED", dataset.downloadedURLs.count().toString()))
+            doc.add(MetadataField("USED-FILES", dataset.usedFiles.count().toString()))
+            doc.add(MetadataField("UNUSED-FILES", dataset.unusedFiles.count().toString()))
 
-            doc.add(NumericField("CONNECTIONS", dataset.connections.toString()))
-            doc.add(NumericField("CONNECTED-VERTICES", dataset.connectedVertices.toString()))
-            doc.add(NumericField("AVERAGE-LITERALS-PER-VERTEX", dataset.averageLiteralsPerVertex.toString()))
+            doc.add(MetadataField("CONNECTIONS", dataset.connections.toString()))
+            doc.add(MetadataField("CONNECTED-VERTICES", dataset.connectedVertices.toString()))
+            doc.add(MetadataField("AVERAGE-LITERALS-PER-VERTEX", dataset.averageLiteralsPerVertex.toString()))
 
             writer.addDocument(doc)
+            indexed++
+
+            println("Indexed $indexed of " + datasets.size)
+
         }
 
         writer.commit()
