@@ -10,7 +10,10 @@ import org.apache.lucene.store.FSDirectory
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.FileReader
+import java.io.PrintWriter
 import java.nio.file.Paths
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Searcher(
     indexPath: String,
@@ -41,7 +44,7 @@ class Searcher(
 
     }
 
-    fun searchInMetadataOnly(runIdentifier: String, writer: BufferedWriter) {
+    fun searchInMetadataOnly(runIdentifier: String, writer: PrintWriter) {
 
         val fields = arrayOf(
             DocumentField.TITLE.name,
@@ -57,14 +60,14 @@ class Searcher(
 
             for ((index, hit) in hits.withIndex()) {
                 val doc = reader.storedFields().document(hit.doc)
-                writer.write(
-                    "%s\tQ0\t%s\t%d\t%.6f\t%s%n".format(
-                        queryID,
-                        doc.get(DocumentField.ID.name),
-                        index,
-                        hit.score,
-                        runIdentifier
-                    )
+                writer.printf(
+                    Locale.ENGLISH,
+                    "%s\tQ0\t%s\t%d\t%.6f\t%s%n",
+                    queryID,
+                    doc.get(DocumentField.ID.name),
+                    index + 1,
+                    hit.score,
+                    runIdentifier
                 )
             }
 
