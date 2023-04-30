@@ -1,0 +1,23 @@
+package indexing
+
+enum class DocumentField {
+    ID,
+    TITLE,
+    DESCRIPTION,
+    AUTHOR,
+    TAGS,
+
+    CLASSES,
+    LITERALS,
+    ENTITIES,
+    PROPERTIES,
+
+    COUNT_DOWNLOADED_FILES,
+    COUNT_FAILED_FILES,
+    COUNT_USED_FILES,
+    COUNT_UNUSED_FILES,
+
+    CONNECTIONS,
+    CONNECTED_VERTICES,
+    AVERAGE_LITERALS_PER_VERTEX
+}
