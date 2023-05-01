@@ -81,7 +81,7 @@ class Searcher(
 
     }
 
-    fun searchAcrossAllDataOnly(runIdentifier: String, writer: PrintWriter) {
+    fun searchAcrossAllData(runIdentifier: String, writer: PrintWriter) {
 
         val fields = arrayOf(
             DocumentField.TITLE.name,

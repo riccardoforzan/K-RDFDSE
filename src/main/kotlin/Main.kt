@@ -20,27 +20,15 @@ fun main(args: Array<String>) {
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path")
 
-    // Create the analyzer
     val analyzer: Analyzer = StandardAnalyzer()
-
-    // Set the similarity
     val similarity: Similarity = ClassicSimilarity()
 
-    // Retrieve the path to all the datasets
-    val metadataFiles = DatasetFolderReader("datasets/").getMetadataFilesPath()
-
-    // Create the indexer
-    val indexer = Indexer("index/", analyzer, similarity)
-
-    // Load all datasets
-    val datasets: List<Dataset> = metadataFiles!!.map { filePath -> DatasetReader(filePath).readJSON() }
-
-    /*
     // INDEXING
     println("Indexing...")
-    indexer.index(datasets)
+    val metadataFiles = DatasetFolderReader("datasets/").getMetadataFilesPath()
+    val indexer = Indexer("index/", analyzer, similarity)
+    indexer.indexFiles(metadataFiles!!)
     println("Indexing complete")
-     */
 
     // QUERY
     var runID: String
@@ -67,7 +55,7 @@ fun main(args: Array<String>) {
     println("Querying $runID ...")
     val metaAndExtractedSearchOutputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(metaAndExtractedSearchOutputFile)
-    searcher.searchInExtractedDataOnly(runID, writer)
+    searcher.searchAcrossAllData(runID, writer)
     writer.close()
     println("Completed")
 
