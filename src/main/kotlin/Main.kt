@@ -17,8 +17,6 @@ fun main(args: Array<String>) {
     // TODO: Parse from cl the directory that contains all the JSON file to index
     // TODO: Parse from cl the run ID
 
-    val runID = "001"
-
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path")
 
@@ -38,25 +36,39 @@ fun main(args: Array<String>) {
     val datasets: List<Dataset> = metadataFiles!!.map { filePath -> DatasetReader(filePath).readJSON() }
 
     /*
+    // INDEXING
     println("Indexing...")
-
-    // Index all the metadata files fount in the dataset folder
     indexer.index(datasets)
-
     println("Indexing complete")
      */
 
-    println("Querying...")
-
-    val outputFile = FileWriter("output/$runID-output.txt")
-    val writer = PrintWriter(outputFile)
-
+    // QUERY
+    var runID: String
+    var writer: PrintWriter
     val searcher = Searcher("index/", analyzer, similarity, "queries/all_queries.txt", 100)
 
+    runID = "META-ONLY"
+    println("Querying $runID ...")
+    val metaSearchOutputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(metaSearchOutputFile)
     searcher.searchInMetadataOnly(runID, writer)
-
     writer.close()
+    println("Completed")
 
+    runID = "EXTRACTED-ONLY"
+    println("Querying $runID ...")
+    val extractedSearchOutputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(extractedSearchOutputFile)
+    searcher.searchInExtractedDataOnly(runID, writer)
+    writer.close()
+    println("Completed")
+
+    runID = "META+EXTRACTED"
+    println("Querying $runID ...")
+    val metaAndExtractedSearchOutputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(metaAndExtractedSearchOutputFile)
+    searcher.searchInExtractedDataOnly(runID, writer)
+    writer.close()
     println("Completed")
 
 }
