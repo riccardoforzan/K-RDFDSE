@@ -1,6 +1,4 @@
-import classes.Dataset
 import indexing.DatasetFolderReader
-import indexing.DatasetReader
 import indexing.Indexer
 import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.analysis.standard.StandardAnalyzer
