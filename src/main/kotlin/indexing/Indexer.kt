@@ -18,8 +18,8 @@ class Indexer(indexPath: String, analyzer: Analyzer, similarity: Similarity) {
         iwc.similarity = similarity
         iwc.ramBufferSizeMB = 2048.0
         iwc.openMode = IndexWriterConfig.OpenMode.CREATE
-        iwc.commitOnClose = true;
-        iwc.useCompoundFile = true;
+        iwc.commitOnClose = true
+        iwc.useCompoundFile = true
 
         // If the index directory does not already exist then create it
         val indexDirectory = File(indexPath)

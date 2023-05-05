@@ -2,7 +2,9 @@ import indexing.DatasetFolderReader
 import indexing.Indexer
 import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.analysis.standard.StandardAnalyzer
+import org.apache.lucene.search.similarities.BM25Similarity
 import org.apache.lucene.search.similarities.ClassicSimilarity
+import org.apache.lucene.search.similarities.LMDirichletSimilarity
 import org.apache.lucene.search.similarities.Similarity
 import search.Searcher
 import java.io.FileWriter
@@ -11,48 +13,131 @@ import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
-    // TODO: Parse from cl which similarity to use
-    // TODO: Parse from cl the directory that contains all the JSON file to index
-    // TODO: Parse from cl the run ID
-
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path")
 
+    val maxNumberOfDocuments = 100
     val analyzer: Analyzer = StandardAnalyzer()
-    val similarity: Similarity = ClassicSimilarity()
+    val metadataFiles = DatasetFolderReader("datasets/").getMetadataFilesPath()!!
 
-    // INDEXING
-    println("Indexing...")
-    val metadataFiles = DatasetFolderReader("datasets/").getMetadataFilesPath()
-    val indexer = Indexer("index/", analyzer, similarity)
-    indexer.indexFiles(metadataFiles!!)
-    println("Indexing complete")
+    // run using an implementation of TF-IDF Similarity
+    produceResults(analyzer, ClassicSimilarity(), "CS", metadataFiles, maxNumberOfDocuments)
 
-    // QUERY
-    var runID: String
+    // run using an implementation of BM25 Similarity
+    produceResults(analyzer, BM25Similarity(), "BM25", metadataFiles, maxNumberOfDocuments)
+
+    // run using an implementation of Dirichlet Similarity
+    produceResults(analyzer, LMDirichletSimilarity(), "LMD", metadataFiles, maxNumberOfDocuments)
+}
+
+/**
+ * Run all the queries (SYNTHETIC + TREC + ALL) using the given settings
+ * @param analyzer type of analyzer to use
+ * @param similarity type of similarity to use
+ * @param similarityIdentifier string that will be used in the name of the directory containing the index and in the output files to identify the run parameters
+ * @param metadataFiles list of all the metadata files, containing data that will be indexed
+ * @param maxNumberOfDocuments maximum number of retrieved documents
+ */
+fun produceResults(
+    analyzer: Analyzer,
+    similarity: Similarity,
+    similarityIdentifier: String,
+    metadataFiles: List<String>,
+    maxNumberOfDocuments: Int
+) {
+
+    val indexFolder = "index-$similarityIdentifier/"
+
+    println("Indexing using classic similarity in $indexFolder")
+    val indexer = Indexer(indexFolder, analyzer, similarity)
+    indexer.indexFiles(metadataFiles)
+    println("Indexing complete! ")
+
     var writer: PrintWriter
-    val searcher = Searcher("index/", analyzer, similarity, "queries/all_queries.txt", 100)
+    var searcher: Searcher
+    var runID: String
+    var outputFile: FileWriter
 
-    runID = "META-ONLY"
+    // PERFORM SYNTHETIC QUERIES
+
+    searcher = Searcher(indexFolder, analyzer, similarity, "queries/synthetic_queries.txt", maxNumberOfDocuments)
+
+    runID = "$similarityIdentifier-META-ONLY-SYN-QUERIES"
     println("Querying $runID ...")
-    val metaSearchOutputFile = FileWriter("output/$runID-output.txt")
-    writer = PrintWriter(metaSearchOutputFile)
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
     searcher.searchInMetadataOnly(runID, writer)
     writer.close()
     println("Completed")
 
-    runID = "EXTRACTED-ONLY"
+    runID = "$similarityIdentifier-EXTRACTED-ONLY-SYN-QUERIES"
     println("Querying $runID ...")
-    val extractedSearchOutputFile = FileWriter("output/$runID-output.txt")
-    writer = PrintWriter(extractedSearchOutputFile)
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
     searcher.searchInExtractedDataOnly(runID, writer)
     writer.close()
     println("Completed")
 
-    runID = "META+EXTRACTED"
+    runID = "$similarityIdentifier-META+EXTRACTED-SYN-QUERIES"
     println("Querying $runID ...")
-    val metaAndExtractedSearchOutputFile = FileWriter("output/$runID-output.txt")
-    writer = PrintWriter(metaAndExtractedSearchOutputFile)
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchAcrossAllData(runID, writer)
+    writer.close()
+    println("Completed")
+
+    // PERFORM TREC QUERIES
+
+    searcher = Searcher(indexFolder, analyzer, similarity, "queries/trec_queries.txt", maxNumberOfDocuments)
+
+    runID = "$similarityIdentifier-META-ONLY-TREC-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchInMetadataOnly(runID, writer)
+    writer.close()
+    println("Completed")
+
+    runID = "$similarityIdentifier-EXTRACTED-ONLY-TREC-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchInExtractedDataOnly(runID, writer)
+    writer.close()
+    println("Completed")
+
+    runID = "$similarityIdentifier-META+EXTRACTED-TREC-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchAcrossAllData(runID, writer)
+    writer.close()
+    println("Completed")
+
+    // PERFORM ALL QUERIES
+
+    searcher = Searcher(indexFolder, analyzer, similarity, "queries/all_queries.txt", maxNumberOfDocuments)
+
+    runID = "$similarityIdentifier-META-ONLY-ALL-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchInMetadataOnly(runID, writer)
+    writer.close()
+    println("Completed")
+
+    runID = "$similarityIdentifier-EXTRACTED-ONLY-ALL-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
+    searcher.searchInExtractedDataOnly(runID, writer)
+    writer.close()
+    println("Completed")
+
+    runID = "$similarityIdentifier-META+EXTRACTED-ALL-QUERIES"
+    println("Querying $runID ...")
+    outputFile = FileWriter("output/$runID-output.txt")
+    writer = PrintWriter(outputFile)
     searcher.searchAcrossAllData(runID, writer)
     writer.close()
     println("Completed")
