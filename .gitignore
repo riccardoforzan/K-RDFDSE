@@ -4,7 +4,7 @@ target/
 datasets/
 queries/
 output/
-index/
+index*/
 
 # Created by https://www.toptal.com/developers/gitignore/api/maven,kotlin,java,macos,visualstudiocode,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven,kotlin,java,macos,visualstudiocode,intellij
