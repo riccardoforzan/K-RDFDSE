@@ -38,8 +38,8 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
     fun indexFiles(files: List<String>) {
         val tot = files.size.toString()
         for ((index, file) in files.withIndex()) {
-            println("Indexing " + (index + 1) + " of $tot")
             val dataset = DatasetReader(file).readJSON()
+            println("Indexing " + (index + 1) + " of $tot - Dataset ID ${dataset.id}")
             index(dataset)
         }
 
@@ -57,44 +57,37 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
         doc.add(MetadataField(DocumentField.AUTHOR.name, dataset.author))
         doc.add(MetadataField(DocumentField.TAGS.name, dataset.tags))
 
+        // Add extracted fields
         val basePath = "$datasetsFolderPath/${dataset.id}/"
-
-        val classes = StringBuilder()
-        val literals = StringBuilder()
-        val entities = StringBuilder()
-        val properties = StringBuilder()
-
         for (extracted in dataset.extracted) {
-            classes.append(stringFromFile(basePath + extracted.classesFile))
-            literals.append(stringFromFile(basePath + extracted.literalsFile))
-            entities.append(stringFromFile(basePath + extracted.entitiesFile))
-            properties.append(stringFromFile(basePath + extracted.propertiesFile))
+            appendDataFromFile(basePath + extracted.classesFile, DocumentField.CLASSES.name, doc)
+            appendDataFromFile(basePath + extracted.literalsFile, DocumentField.LITERALS.name, doc)
+            appendDataFromFile(basePath + extracted.entitiesFile, DocumentField.ENTITIES.name, doc)
+            appendDataFromFile(basePath + extracted.propertiesFile, DocumentField.PROPERTIES.name, doc)
         }
 
-        doc.add(DataField(DocumentField.CLASSES.name, classes.toString()))
-        doc.add(DataField(DocumentField.LITERALS.name, literals.toString()))
-        doc.add(DataField(DocumentField.ENTITIES.name, entities.toString()))
-        doc.add(DataField(DocumentField.PROPERTIES.name, properties.toString()))
-
         writer.addDocument(doc)
-
     }
 
-    private fun stringFromFile(filePath: String): String {
-        val file = File(filePath)
+    /**
+     * Appends each line of the file as DataField with the specified name to the document
+     * @param path path of the file
+     * @param fieldName name of the DataField
+     * @param doc Lucene Document that will be modified
+     */
+    private fun appendDataFromFile(path: String, fieldName: String, doc: Document) {
 
-        val stringBuilder = StringBuilder()
+        val file = File(path)
         val charset = Charset.forName("UTF-8")
 
         file.bufferedReader(charset).use { reader: BufferedReader ->
             var line: String? = reader.readLine()
             while (line != null) {
-                stringBuilder.append("$line ")
+                doc.add(DataField(fieldName, line))
                 line = reader.readLine()
             }
         }
 
-        return stringBuilder.toString()
     }
 
 }

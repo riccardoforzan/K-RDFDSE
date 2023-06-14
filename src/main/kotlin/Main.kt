@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
 
     val maxNumberOfDocuments = 100
     val analyzer: Analyzer = StandardAnalyzer()
-    val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!
+    val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!.sorted()
 
     // run using an implementation of TF-IDF Similarity
     produceResults(datasetsFolderPath, analyzer, ClassicSimilarity(), "CS", metadataFiles, maxNumberOfDocuments)
