@@ -1,6 +1,6 @@
 package classes
 
 data class DownloadedURL(
-    val file: String,
+    val name: String,
     val url: String
 )

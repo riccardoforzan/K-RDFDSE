@@ -12,7 +12,7 @@ class DatasetFolderReader(private val path: String) {
         val files = File(this.path).listFiles { obj: File -> obj.isDirectory }
 
         for (file in files!!){
-            val path = file.path + "/metadata-cc.json"
+            val path = file.path + "/metadata.json"
             if(File(path).exists()){
                 paths.add(path)
             }

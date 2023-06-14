@@ -13,25 +13,27 @@ import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
+    val datasetsFolderPath = "../datasets/"
     val path = Paths.get("").toAbsolutePath().toString()
-    println("Working directory: $path")
+    println("Working directory: $path, Datasets in $datasetsFolderPath")
 
     val maxNumberOfDocuments = 100
     val analyzer: Analyzer = StandardAnalyzer()
-    val metadataFiles = DatasetFolderReader("datasets/").getMetadataFilesPath()!!
+    val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!
 
     // run using an implementation of TF-IDF Similarity
-    produceResults(analyzer, ClassicSimilarity(), "CS", metadataFiles, maxNumberOfDocuments)
+    produceResults(datasetsFolderPath, analyzer, ClassicSimilarity(), "CS", metadataFiles, maxNumberOfDocuments)
 
     // run using an implementation of BM25 Similarity
-    produceResults(analyzer, BM25Similarity(), "BM25", metadataFiles, maxNumberOfDocuments)
+    produceResults(datasetsFolderPath, analyzer, BM25Similarity(), "BM25", metadataFiles, maxNumberOfDocuments)
 
     // run using an implementation of Dirichlet Similarity
-    produceResults(analyzer, LMDirichletSimilarity(), "LMD", metadataFiles, maxNumberOfDocuments)
+    produceResults(datasetsFolderPath, analyzer, LMDirichletSimilarity(), "LMD", metadataFiles, maxNumberOfDocuments)
 }
 
 /**
  * Run all the queries (SYNTHETIC + TREC + ALL) using the given settings
+ * @param datasetsFolderPath path in which datasets are stored
  * @param analyzer type of analyzer to use
  * @param similarity type of similarity to use
  * @param similarityIdentifier string that will be used in the name of the directory containing the index and in the output files to identify the run parameters
@@ -39,6 +41,7 @@ fun main(args: Array<String>) {
  * @param maxNumberOfDocuments maximum number of retrieved documents
  */
 fun produceResults(
+    datasetsFolderPath: String,
     analyzer: Analyzer,
     similarity: Similarity,
     similarityIdentifier: String,
@@ -49,7 +52,7 @@ fun produceResults(
     val indexFolder = "index-$similarityIdentifier/"
 
     println("Indexing using classic similarity in $indexFolder")
-    val indexer = Indexer(indexFolder, analyzer, similarity)
+    val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer, similarity)
     indexer.indexFiles(metadataFiles)
     println("Indexing complete! ")
 
