@@ -15,9 +15,9 @@ public class DataField extends Field {
     static {
         type.setStored(false);
         type.setTokenized(true);
-        type.setStoreTermVectors(true);
-        type.setStoreTermVectorPositions(true);
-        type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+        type.setStoreTermVectors(false);
+        type.setStoreTermVectorPositions(false);
+        type.setIndexOptions(IndexOptions.DOCS);
     }
 
     public DataField(final String key, final String value) {

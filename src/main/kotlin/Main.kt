@@ -13,7 +13,7 @@ import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
-    val datasetsFolderPath = "../datasets/"
+    val datasetsFolderPath = "../datasets"
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path, Datasets in $datasetsFolderPath")
 
