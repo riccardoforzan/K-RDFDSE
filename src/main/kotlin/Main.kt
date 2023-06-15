@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path, Datasets in $datasetsFolderPath")
 
-    val maxNumberOfDocuments = 100
+    val maxNumberOfDocuments = 20
     val analyzer: Analyzer = StandardAnalyzer()
     val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!.sorted()
 
@@ -53,10 +53,10 @@ fun produceResults(
     val logger = LogManager.getLogger()
     val indexFolder = "index-$similarityIdentifier/"
 
-    println("Indexing using classic similarity in $indexFolder")
+    logger.info("Indexing using classic similarity in $indexFolder")
     val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer, similarity)
     indexer.indexFiles(metadataFiles)
-    println("Indexing complete! ")
+    logger.info("Indexing complete! ")
 
     var writer: PrintWriter
     var searcher: Searcher

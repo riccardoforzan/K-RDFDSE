@@ -85,7 +85,7 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
             writer.addDocument(doc)
             logger.info("Dataset ${dataset.id} indexed")
         }catch (e: Exception){
-            logger.error("Dataset ${dataset.id} not indexed ${e.localizedMessage}")
+            logger.error("Dataset ${dataset.id} not indexed $e")
         }
     }
 
