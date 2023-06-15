@@ -1,5 +1,6 @@
 import indexing.DatasetFolderReader
 import indexing.Indexer
+import org.apache.logging.log4j.LogManager
 import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.search.similarities.BM25Similarity
@@ -49,6 +50,7 @@ fun produceResults(
     maxNumberOfDocuments: Int
 ) {
 
+    val logger = LogManager.getLogger()
     val indexFolder = "index-$similarityIdentifier/"
 
     println("Indexing using classic similarity in $indexFolder")
@@ -66,83 +68,83 @@ fun produceResults(
     searcher = Searcher(indexFolder, analyzer, similarity, "queries/synthetic_queries.txt", maxNumberOfDocuments)
 
     runID = "$similarityIdentifier-META-ONLY-SYN-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInMetadataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-EXTRACTED-ONLY-SYN-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInExtractedDataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-META+EXTRACTED-SYN-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchAcrossAllData(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     // PERFORM TREC QUERIES
 
     searcher = Searcher(indexFolder, analyzer, similarity, "queries/trec_queries.txt", maxNumberOfDocuments)
 
     runID = "$similarityIdentifier-META-ONLY-TREC-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInMetadataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-EXTRACTED-ONLY-TREC-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInExtractedDataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-META+EXTRACTED-TREC-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchAcrossAllData(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     // PERFORM ALL QUERIES
 
     searcher = Searcher(indexFolder, analyzer, similarity, "queries/all_queries.txt", maxNumberOfDocuments)
 
     runID = "$similarityIdentifier-META-ONLY-ALL-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInMetadataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-EXTRACTED-ONLY-ALL-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchInExtractedDataOnly(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
     runID = "$similarityIdentifier-META+EXTRACTED-ALL-QUERIES"
-    println("Querying $runID ...")
+    logger.info("Querying $runID ...")
     outputFile = FileWriter("output/$runID-output.txt")
     writer = PrintWriter(outputFile)
     searcher.searchAcrossAllData(runID, writer)
     writer.close()
-    println("Completed")
+    logger.info("Completed")
 
 }

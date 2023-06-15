@@ -68,14 +68,22 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
         // Add extracted fields
         val basePath = "$datasetsFolderPath/${dataset.id}/"
         for (extracted in dataset.extracted) {
+            logger.info("Reading from file ${basePath + extracted.classesFile}")
             appendDataFromFile(basePath + extracted.classesFile, DocumentField.CLASSES.name, doc)
+
+            logger.info("Reading from file ${basePath + extracted.literalsFile}")
             appendDataFromFile(basePath + extracted.literalsFile, DocumentField.LITERALS.name, doc)
+
+            logger.info("Reading from file ${basePath + extracted.entitiesFile}")
             appendDataFromFile(basePath + extracted.entitiesFile, DocumentField.ENTITIES.name, doc)
+
+            logger.info("Reading from file ${basePath + extracted.propertiesFile}")
             appendDataFromFile(basePath + extracted.propertiesFile, DocumentField.PROPERTIES.name, doc)
         }
 
         try {
             writer.addDocument(doc)
+            logger.info("Dataset ${dataset.id} indexed")
         }catch (e: Exception){
             logger.error("Dataset ${dataset.id} not indexed ${e.localizedMessage}")
         }
