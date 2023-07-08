@@ -16,6 +16,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.nio.charset.Charset
+import java.util.Random
 
 class Indexer(private val datasetsFolderPath: String, indexPath: String, analyzer: Analyzer, similarity: Similarity) {
 
@@ -40,7 +41,7 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
         this.writer = IndexWriter(FSDirectory.open(indexDirectory.toPath()), iwc)
 
         // Create the logger
-        this.logger= LogManager.getLogger()
+        this.logger = LogManager.getLogger()
     }
 
     fun indexFiles(files: List<String>) {
@@ -69,40 +70,70 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
         val basePath = "$datasetsFolderPath/${dataset.id}/"
         for (extracted in dataset.extracted) {
             logger.info("Reading from file ${basePath + extracted.classesFile}")
-            appendDataFromFile(basePath + extracted.classesFile, DocumentField.CLASSES.name, doc)
+            sampleDataFromFile(basePath + extracted.classesFile, DocumentField.CLASSES.name, doc)
 
             logger.info("Reading from file ${basePath + extracted.literalsFile}")
-            appendDataFromFile(basePath + extracted.literalsFile, DocumentField.LITERALS.name, doc)
+            sampleDataFromFile(basePath + extracted.literalsFile, DocumentField.LITERALS.name, doc)
 
             logger.info("Reading from file ${basePath + extracted.entitiesFile}")
-            appendDataFromFile(basePath + extracted.entitiesFile, DocumentField.ENTITIES.name, doc)
+            sampleDataFromFile(basePath + extracted.entitiesFile, DocumentField.ENTITIES.name, doc)
 
             logger.info("Reading from file ${basePath + extracted.propertiesFile}")
-            appendDataFromFile(basePath + extracted.propertiesFile, DocumentField.PROPERTIES.name, doc)
+            sampleDataFromFile(basePath + extracted.propertiesFile, DocumentField.PROPERTIES.name, doc)
         }
 
         try {
             writer.addDocument(doc)
             logger.info("Dataset ${dataset.id} indexed")
-        }catch (e: Exception){
+        } catch (e: Exception) {
             logger.error("Dataset ${dataset.id} not indexed $e")
         }
     }
 
     /**
-     * Appends each line of the file as DataField with the specified name to the document
+     * Using reservoir sampling, appends lines of the input file as DataField with the specified name to the document.
+     * The sampling is applied only for files which lines count is greater than Int.MAX_VALUE because Int.MAX_VALUE is
+     * the maximum number of fields for a Lucene document
      * @param path path of the file
      * @param fieldName name of the DataField
      * @param doc Lucene Document that will be modified
      */
-    private fun appendDataFromFile(path: String, fieldName: String, doc: Document) {
+    private fun sampleDataFromFile(path: String, fieldName: String, doc: Document) {
         FileInputStream(path).use { fileInputStream ->
             BufferedReader(InputStreamReader(fileInputStream, Charset.forName("UTF-8"))).use { reader ->
+
+                // Sampling
+                val random = Random()
+                val reservoir = ArrayList<DataField>(Int.MAX_VALUE)
+
+                // Reading the file
                 var line: String? = reader.readLine()
+                var lineNumber: Long = 0
+
+                // Read the file
                 while (line != null) {
-                    doc.add(DataField(fieldName, line))
+                    lineNumber++
+
+                    if (lineNumber < Int.MAX_VALUE) {
+                        // Add all elements until you saturate the reservoir
+                        reservoir.add(DataField(fieldName, line))
+                    } else {
+                        // If the randomly picked index is smaller than Int.MAX_VALUE, then replace the element present
+                        // at the index with new element from stream
+                        val randomIndex = random.nextLong(lineNumber)
+                        if (randomIndex < Int.MAX_VALUE) {
+                            reservoir[randomIndex.toInt()] = DataField(fieldName, line)
+                        }
+                    }
+
                     line = reader.readLine()
                 }
+
+                // Add sampled lines to the document
+                for (field in reservoir) {
+                    doc.add(field)
+                }
+
             }
         }
     }
