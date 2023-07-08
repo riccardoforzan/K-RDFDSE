@@ -9,7 +9,6 @@ import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
-import org.apache.lucene.search.similarities.Similarity
 import org.apache.lucene.store.FSDirectory
 import java.io.BufferedReader
 import java.io.File
@@ -18,14 +17,13 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.Random
 
-class Indexer(private val datasetsFolderPath: String, indexPath: String, analyzer: Analyzer, similarity: Similarity) {
+class Indexer(private val datasetsFolderPath: String, indexPath: String, analyzer: Analyzer) {
 
     private var writer: IndexWriter
     private var logger: Logger
 
     init {
         val iwc = IndexWriterConfig(analyzer)
-        iwc.similarity = similarity
         iwc.ramBufferSizeMB = 2048.0
         iwc.openMode = IndexWriterConfig.OpenMode.CREATE
         iwc.commitOnClose = true
@@ -104,7 +102,7 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
 
                 // Sampling
                 val random = Random()
-                val reservoir = ArrayList<DataField>(Int.MAX_VALUE)
+                val reservoir = ArrayList<DataField>()
 
                 // Reading the file
                 var line: String? = reader.readLine()

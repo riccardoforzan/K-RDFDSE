@@ -22,41 +22,52 @@ fun main(args: Array<String>) {
     val analyzer: Analyzer = StandardAnalyzer()
     val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!.sorted()
 
+    // creating the index
+    val indexFolder = "index/"
+    createIndex(datasetsFolderPath, analyzer, metadataFiles, indexFolder)
+
     // run using an implementation of TF-IDF Similarity
-    produceResults(datasetsFolderPath, analyzer, ClassicSimilarity(), "CS", metadataFiles, maxNumberOfDocuments)
+    produceResults(indexFolder, analyzer, ClassicSimilarity(), "CS", maxNumberOfDocuments)
 
     // run using an implementation of BM25 Similarity
-    produceResults(datasetsFolderPath, analyzer, BM25Similarity(), "BM25", metadataFiles, maxNumberOfDocuments)
+    produceResults(indexFolder, analyzer, BM25Similarity(), "BM25", maxNumberOfDocuments)
 
     // run using an implementation of Dirichlet Similarity
-    produceResults(datasetsFolderPath, analyzer, LMDirichletSimilarity(), "LMD", metadataFiles, maxNumberOfDocuments)
+    produceResults(indexFolder, analyzer, LMDirichletSimilarity(), "LMD", maxNumberOfDocuments)
 }
 
 /**
- * Run all the queries (SYNTHETIC + TREC + ALL) using the given settings
  * @param datasetsFolderPath path in which datasets are stored
+ * @param analyzer type of analyzer to use
+ * @param metadataFiles list of all the metadata files, containing data that will be indexed
+ * @param indexFolder folder of the file system in which the index will be stored
+ */
+fun createIndex(datasetsFolderPath: String, analyzer: Analyzer, metadataFiles: List<String>, indexFolder: String) {
+    val logger = LogManager.getLogger()
+    logger.info("Creating index in $indexFolder")
+    val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer)
+    indexer.indexFiles(metadataFiles)
+    logger.info("Indexing complete!")
+}
+
+
+/**
+ * Run all the queries (SYNTHETIC + TREC + ALL) using the given settings
+ * @param indexFolder folder of the file system in which the index is stored
  * @param analyzer type of analyzer to use
  * @param similarity type of similarity to use
  * @param similarityIdentifier string that will be used in the name of the directory containing the index and in the output files to identify the run parameters
- * @param metadataFiles list of all the metadata files, containing data that will be indexed
  * @param maxNumberOfDocuments maximum number of retrieved documents
  */
 fun produceResults(
-    datasetsFolderPath: String,
+    indexFolder: String,
     analyzer: Analyzer,
     similarity: Similarity,
     similarityIdentifier: String,
-    metadataFiles: List<String>,
     maxNumberOfDocuments: Int
 ) {
 
     val logger = LogManager.getLogger()
-    val indexFolder = "index-$similarityIdentifier/"
-
-    logger.info("Indexing using classic similarity in $indexFolder")
-    val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer, similarity)
-    indexer.indexFiles(metadataFiles)
-    logger.info("Indexing complete! ")
 
     var writer: PrintWriter
     var searcher: Searcher
