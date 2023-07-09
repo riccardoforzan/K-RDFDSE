@@ -18,21 +18,37 @@ fun main(args: Array<String>) {
     val path = Paths.get("").toAbsolutePath().toString()
     println("Working directory: $path, Datasets in $datasetsFolderPath")
 
+    // Max number of retrieved documents
     val maxNumberOfDocuments = 20
-    val analyzer: Analyzer = StandardAnalyzer()
+
+    // Create the analyzer
+    var analyzer: Analyzer
+    val classloader = Thread.currentThread().contextClassLoader
+
+    // Analyzer without stoplist
+    analyzer = StandardAnalyzer()
+
+    // Analyzer with NLTK stoplist
+    // val NLTKStoplist = classloader.getResourceAsStream("stoplists/nltk_en.txt")!!.reader()
+    // analyzer = StandardAnalyzer(NLTKStoplist)
+
+    // Analyzer with big stoplist
+    // val bigStopList = classloader.getResourceAsStream("stoplists/big_en.txt")!!.reader()
+    // analyzer = StandardAnalyzer(bigStopList)
+
+    // Creating the index
+    val indexFolder = "index/"
     val metadataFiles = DatasetFolderReader(datasetsFolderPath).getMetadataFilesPath()!!.sorted()
 
-    // creating the index
-    val indexFolder = "index/"
     createIndex(datasetsFolderPath, analyzer, metadataFiles, indexFolder)
 
-    // run using an implementation of TF-IDF Similarity
+    // Run using an implementation of TF-IDF Similarity
     produceResults(indexFolder, analyzer, ClassicSimilarity(), "CS", maxNumberOfDocuments)
 
-    // run using an implementation of BM25 Similarity
+    // Run using an implementation of BM25 Similarity
     produceResults(indexFolder, analyzer, BM25Similarity(), "BM25", maxNumberOfDocuments)
 
-    // run using an implementation of Dirichlet Similarity
+    // Run using an implementation of Dirichlet Similarity
     produceResults(indexFolder, analyzer, LMDirichletSimilarity(), "LMD", maxNumberOfDocuments)
 }
 
