@@ -3,7 +3,7 @@
 target/
 datasets/
 queries/
-output/
+output*/
 index*/
 
 # Created by https://www.toptal.com/developers/gitignore/api/maven,kotlin,java,macos,visualstudiocode,intellij
