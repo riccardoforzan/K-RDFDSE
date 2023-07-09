@@ -39,14 +39,14 @@ For large files reservoir sampling has been used to not exceed Lucene limitation
 
 ### ALL QUERIES
 
-| PAPER RUN NAME | RUN NAME                              |   NDCG@5 |   NDCG@10 |   MAP@5 |   MAP@10 |
-|----------------|---------------------------------------|----------|-----------|---------|----------|
-| TF-IDF         | CS-META+EXTRACTED-ALL-QUERIES-trec    |   0.4925 |    0.519  |  0.2806 |   0.3803 |
-| TF-IDF [m]     | CS-META-ONLY-ALL-QUERIES-trec         |   0.4819 |    0.5058 |  0.2708 |   0.3684 |
-| TF-IDF [d]     | CS-EXTRACTED-ONLY-ALL-QUERIES-trec    |   0.0866 |    0.0956 |  0.0469 |   0.0573 |
-| BM25F          | BM25-META+EXTRACTED-ALL-QUERIES-trec  |   0.4936 |    0.5198 |  0.2806 |   0.3731 |
-| BM25F [m]      | BM25-META-ONLY-ALL-QUERIES-trec       |   0.5184 |    0.5359 |  0.2935 |   0.3923 |
-| BM25F [d]      | BM25-EXTRACTED-ONLY-ALL-QUERIES-trec  |   0.1202 |    0.1297 |  0.073  |   0.0842 |
-| LMD            | LMD-META+EXTRACTED-ALL-QUERIES-trec   |   0.2153 |    0.2350 |  0.1261 |   0.1526 |
-| LMD [m]        | LMD-META-ONLY-ALL-QUERIES-trec        |   0.4634 |    0.4800 |  0.2743 |   0.3540 |
-| LMD [d]        | LMD-EXTRACTED-ONLY-ALL-QUERIES-trec   |   0.1055 |    0.1178 |  0.0645 |   0.0755 |
+| PAPER RUN NAME | RUN NAME                              |   NDCG@5 | NDCG@10 | MAP@5  |   MAP@10 |
+|----------------|---------------------------------------|----------|---------|--------|----------|
+| TF-IDF         | CS-META+EXTRACTED-ALL-QUERIES-trec    |   0.4925 | 0.5190  | 0.2806 |   0.3803 |
+| TF-IDF [m]     | CS-META-ONLY-ALL-QUERIES-trec         |   0.4819 | 0.5058  | 0.2708 |   0.3684 |
+| TF-IDF [d]     | CS-EXTRACTED-ONLY-ALL-QUERIES-trec    |   0.0866 | 0.0956  | 0.0469 |   0.0573 |
+| BM25F          | BM25-META+EXTRACTED-ALL-QUERIES-trec  |   0.4936 | 0.5198  | 0.2806 |   0.3731 |
+| BM25F [m]      | BM25-META-ONLY-ALL-QUERIES-trec       |   0.5184 | 0.5359  | 0.2935 |   0.3923 |
+| BM25F [d]      | BM25-EXTRACTED-ONLY-ALL-QUERIES-trec  |   0.1202 | 0.1297  | 0.0730 |   0.0842 |
+| LMD            | LMD-META+EXTRACTED-ALL-QUERIES-trec   |   0.2153 | 0.2350  | 0.1261 |   0.1526 |
+| LMD [m]        | LMD-META-ONLY-ALL-QUERIES-trec        |   0.4634 | 0.4800  | 0.2743 |   0.3540 |
+| LMD [d]        | LMD-EXTRACTED-ONLY-ALL-QUERIES-trec   |   0.1055 | 0.1178  | 0.0645 |   0.0755 |
