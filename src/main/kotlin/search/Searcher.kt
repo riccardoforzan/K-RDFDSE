@@ -61,7 +61,8 @@ class Searcher(
     fun searchInMetadataOnly(runIdentifier: String, writer: PrintWriter) {
         for (query in queries) {
             val queryID = query.id
-            val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields, analyzer, query.text)
+            //val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildMultiFieldQuery(metaDataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }
@@ -70,7 +71,8 @@ class Searcher(
     fun searchInExtractedDataOnly(runIdentifier: String, writer: PrintWriter) {
         for (query in queries) {
             val queryID = query.id
-            val q = CustomQueryBuilder.buildBooleanQuery(dataFields, analyzer, query.text)
+            //val q = CustomQueryBuilder.buildBooleanQuery(dataFields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildMultiFieldQuery(dataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }
@@ -79,7 +81,8 @@ class Searcher(
     fun searchAcrossAllData(runIdentifier: String, writer: PrintWriter) {
         for (query in queries) {
             val queryID = query.id
-            val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields + dataFields, analyzer, query.text)
+            //val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields + dataFields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildMultiFieldQuery(metaDataFields + dataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }

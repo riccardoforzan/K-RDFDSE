@@ -1,6 +1,7 @@
 package search
 
 import org.apache.lucene.analysis.Analyzer
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
@@ -11,9 +12,7 @@ class CustomQueryBuilder {
     companion object {
 
         fun buildBooleanQuery(fields: Array<String>, analyzer: Analyzer, queryText: String): Query {
-
             val booleanQueryBuilder = BooleanQuery.Builder()
-
             for (field in fields) {
                 booleanQueryBuilder.add(
                     BooleanClause(
@@ -23,9 +22,14 @@ class CustomQueryBuilder {
                     )
                 )
             }
-
             return booleanQueryBuilder.build()
         }
+
+        fun buildMultiFieldQuery(fields: Array<String>, analyzer: Analyzer, queryText: String): Query {
+            val queryParser = MultiFieldQueryParser(fields, analyzer)
+            return queryParser.parse(QueryParser.escape(queryText))
+        }
+
 
     }
 
