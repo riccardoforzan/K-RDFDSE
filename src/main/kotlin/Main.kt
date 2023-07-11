@@ -61,7 +61,7 @@ fun main(args: Array<String>) {
 fun createIndex(datasetsFolderPath: String, analyzer: Analyzer, metadataFiles: List<String>, indexFolder: String) {
     val logger = LogManager.getLogger()
     logger.info("Creating index in $indexFolder")
-    val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer)
+    val indexer = Indexer(datasetsFolderPath, indexFolder, analyzer, true)
     indexer.indexFiles(metadataFiles)
     logger.info("Indexing complete!")
 }

@@ -17,7 +17,12 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.Random
 
-class Indexer(private val datasetsFolderPath: String, indexPath: String, analyzer: Analyzer) {
+class Indexer(
+    private val datasetsFolderPath: String,
+    indexPath: String,
+    analyzer: Analyzer,
+    private val skipEmpty: Boolean = false
+) {
 
     private var writer: IndexWriter
     private var logger: Logger
@@ -55,6 +60,11 @@ class Indexer(private val datasetsFolderPath: String, indexPath: String, analyze
     }
 
     private fun index(dataset: DatasetMetadata) {
+
+        if (skipEmpty && dataset.extracted.isEmpty()) {
+            logger.warn("Dataset ${dataset.id} is empty")
+            return
+        }
 
         val doc = Document()
 
