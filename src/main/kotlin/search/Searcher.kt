@@ -9,7 +9,6 @@ import org.apache.lucene.search.ScoreDoc
 import org.apache.lucene.search.similarities.Similarity
 import org.apache.lucene.store.FSDirectory
 import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.FileReader
 import java.io.PrintWriter
 import java.nio.file.Paths
@@ -30,6 +29,20 @@ class Searcher(
     private val searcher: IndexSearcher
     private val queries = ArrayList<Query>()
 
+    private val metaDataFields = arrayOf(
+        DocumentField.TITLE.name,
+        DocumentField.DESCRIPTION.name,
+        DocumentField.AUTHOR.name,
+        DocumentField.TAGS.name
+    )
+
+    private val dataFields =  arrayOf(
+        DocumentField.CLASSES.name,
+        DocumentField.LITERALS.name,
+        DocumentField.ENTITIES.name,
+        DocumentField.PROPERTIES.name
+    )
+
     init {
         val indexDir = Paths.get(indexPath)
         reader = DirectoryReader.open(FSDirectory.open(indexDir))
@@ -46,63 +59,33 @@ class Searcher(
     }
 
     fun searchInMetadataOnly(runIdentifier: String, writer: PrintWriter) {
-
-        val fields = arrayOf(
-            DocumentField.TITLE.name,
-            DocumentField.DESCRIPTION.name,
-            DocumentField.AUTHOR.name,
-            DocumentField.TAGS.name
-        )
-
         for (query in queries) {
             val queryID = query.id
-            val q = CustomBooleanQueryBuilder.buildQuery(fields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }
-
     }
 
     fun searchInExtractedDataOnly(runIdentifier: String, writer: PrintWriter) {
-
-        val fields = arrayOf(
-            DocumentField.CLASSES.name,
-            DocumentField.LITERALS.name,
-            DocumentField.ENTITIES.name,
-            DocumentField.PROPERTIES.name
-        )
-
         for (query in queries) {
             val queryID = query.id
-            val q = CustomBooleanQueryBuilder.buildQuery(fields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildBooleanQuery(dataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }
-
     }
 
     fun searchAcrossAllData(runIdentifier: String, writer: PrintWriter) {
-
-        val fields = arrayOf(
-            DocumentField.TITLE.name,
-            DocumentField.DESCRIPTION.name,
-            DocumentField.AUTHOR.name,
-            DocumentField.TAGS.name,
-            DocumentField.CLASSES.name,
-            DocumentField.LITERALS.name,
-            DocumentField.ENTITIES.name,
-            DocumentField.PROPERTIES.name
-        )
-
         for (query in queries) {
             val queryID = query.id
-            val q = CustomBooleanQueryBuilder.buildQuery(fields, analyzer, query.text)
+            val q = CustomQueryBuilder.buildBooleanQuery(metaDataFields + dataFields, analyzer, query.text)
             val hits = searcher.search(q, maxNumberOfDocuments).scoreDocs
             writeHits(runIdentifier, queryID, hits, writer)
         }
     }
 
-    private fun writeHits(runIdentifier:String, queryID: Int, hits: Array<ScoreDoc>, writer: PrintWriter){
+    private fun writeHits(runIdentifier: String, queryID: Int, hits: Array<ScoreDoc>, writer: PrintWriter) {
         for ((index, hit) in hits.withIndex()) {
             val doc = reader.storedFields().document(hit.doc)
             writer.printf(

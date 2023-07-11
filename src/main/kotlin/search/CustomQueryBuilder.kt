@@ -4,12 +4,13 @@ import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
+import org.apache.lucene.search.Query
 
-class CustomBooleanQueryBuilder {
+class CustomQueryBuilder {
 
     companion object {
 
-        fun buildQuery(fields: Array<String>, analyzer: Analyzer, queryText: String): BooleanQuery {
+        fun buildBooleanQuery(fields: Array<String>, analyzer: Analyzer, queryText: String): Query {
 
             val booleanQueryBuilder = BooleanQuery.Builder()
 
