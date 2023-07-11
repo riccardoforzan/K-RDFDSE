@@ -7,48 +7,50 @@ Run performed on the downloaded collection with modifications (without performin
 
 Analyzer used: StandardAnalyzer without any stoplist
 
+For large files reservoir sampling has been used to not exceed Lucene limitations
+
 ### ALL QUERIES
 
 |PAPER RUN NAME| RUN NAME                         |       NDCG@5 |       NDCG@10 |       MAP@5 |       MAP@10 |
 |--------------|----------------------------------|--------------|---------------|-------------|--------------|
-| TF-IDF       | CS-META+EXTRACTED-ALL-QUERIES    |       0,4751 |        0,5042 |      0,2691 |       0,3667 |
-| TF-IDF [m]   | CS-META-ONLY-ALL-QUERIES         |       0,4599 |        0,4740 |      0,2583 |       0,3436 |
-| TF-IDF [d]   | CS-EXTRACTED-ONLY-ALL-QUERIES    |       0,1280 |        0,1362 |      0,0667 |       0,0789 |
-| BM25         | BM25-META+EXTRACTED-ALL-QUERIES  |       0,3704 |        0,4099 |      0,2051 |       0,2752 |
-| BM25 [m]     | BM25-META-ONLY-ALL-QUERIES       |       0,5059 |        0,5222 |      0,2865 |       0,3820 |
-| BM25 [d]     | BM25-EXTRACTED-ONLY-ALL-QUERIES  |       0,1263 |        0,1383 |      0,0724 |       0,0880 |
-| LDM          | LMD-META+EXTRACTED-ALL-QUERIES   |       0,2775 |        0,2997 |      0,1590 |       0,1952 |
-| LDM [m]      | LMD-META-ONLY-ALL-QUERIES        |       0,4538 |        0,4699 |      0,2679 |       0,3446 |
-| LDM [d]      | LMD-EXTRACTED-ONLY-ALL-QUERIES   |       0,1481 |        0,1624 |      0,0799 |       0,0992 |
+| TF-IDF       | CS-META+EXTRACTED-ALL-QUERIES    |       0,4761 |        0,4989 |      0,2693 |       0,3634 |
+| TF-IDF [m]   | CS-META-ONLY-ALL-QUERIES         |       0,4602 |        0,4744 |      0,2584 |       0,3439 |
+| TF-IDF [d]   | CS-EXTRACTED-ONLY-ALL-QUERIES    |       0,0822 |        0,0935 |      0,0445 |       0,0555 |
+| BM25         | BM25-META+EXTRACTED-ALL-QUERIES  |       0,4673 |        0,4966 |      0,2642 |       0,3525 |
+| BM25 [m]     | BM25-META-ONLY-ALL-QUERIES       |       0,5055 |        0,5222 |      0,2865 |       0,3820 |
+| BM25 [d]     | BM25-EXTRACTED-ONLY-ALL-QUERIES  |       0,1128 |        0,1223 |      0,0666 |       0,0780 |
+| LDM          | LMD-META+EXTRACTED-ALL-QUERIES   |       0,2173 |        0,2403 |      0,1289 |       0,1571 |
+| LDM [m]      | LMD-META-ONLY-ALL-QUERIES        |       0,4533 |        0,4695 |      0,2677 |       0,3443 |
+| LDM [d]      | LMD-EXTRACTED-ONLY-ALL-QUERIES   |       0,0996 |        0,1142 |      0,0592 |       0,0707 |
 
-# RESULTS
+### RESULTS
 
 |PAPER RUN NAME| RUN NAME                         |       NDCG@5 |       NDCG@10 |       MAP@5 |       MAP@10 |
 |--------------|----------------------------------|--------------|---------------|-------------|--------------|
-| BM25 [d]     | BM25-EXTRACTED-ONLY-ALL-QUERIES  |       0,1263 |        0,1383 |      0,0724 |       0,0880 |
-| BM25 [d]     | BM25-EXTRACTED-ONLY-SYN-QUERIES  |       0,0759 |        0,0850 |      0,0407 |       0,0514 |
-| BM25 [d]     | BM25-EXTRACTED-ONLY-TREC-QUERIES |       0,0504 |        0,0533 |      0,0317 |       0,0366 |
-| BM25         | BM25-META+EXTRACTED-ALL-QUERIES  |       0,3704 |        0,4099 |      0,2051 |       0,2752 |
-| BM25         | BM25-META+EXTRACTED-SYN-QUERIES  |       0,2265 |        0,2435 |      0,1265 |       0,1661 |
-| BM25         | BM25-META+EXTRACTED-TREC-QUERIES |       0,1439 |        0,1664 |      0,0786 |       0,1091 |
-| BM25 [m]     | BM25-META-ONLY-ALL-QUERIES       |       0,5059 |        0,5222 |      0,2865 |       0,3820 |
-| BM25 [m]     | BM25-META-ONLY-SYN-QUERIES       |       0,2997 |        0,2996 |      0,1679 |       0,2185 |
-| BM25 [m]     | BM25-META-ONLY-TREC-QUERIES      |       0,2062 |        0,2226 |      0,1186 |       0,1635 |
-| TF-IDF [d]   | CS-EXTRACTED-ONLY-ALL-QUERIES    |       0,1280 |        0,1362 |      0,0667 |       0,0789 |
-| TF-IDF [d]   | CS-EXTRACTED-ONLY-SYN-QUERIES    |       0,0745 |        0,0800 |      0,0389 |       0,0457 |
-| TF-IDF [d]   | CS-EXTRACTED-ONLY-TREC-QUERIES   |       0,0535 |        0,0562 |      0,0277 |       0,0332 |
-| TF-IDF       | CS-META+EXTRACTED-ALL-QUERIES    |       0,4751 |        0,5042 |      0,2691 |       0,3667 |
-| TF-IDF       | CS-META+EXTRACTED-SYN-QUERIES    |       0,2745 |        0,2814 |      0,1522 |       0,2025 |
-| TF-IDF       | CS-META+EXTRACTED-TREC-QUERIES   |       0,2006 |        0,2228 |      0,1168 |       0,1642 |
-| TF-IDF [m]   | CS-META-ONLY-ALL-QUERIES         |       0,4599 |        0,4740 |      0,2583 |       0,3436 |
-| TF-IDF [m]   | CS-META-ONLY-SYN-QUERIES         |       0,2644 |        0,2661 |      0,1447 |       0,1891 |
-| TF-IDF [m]   | CS-META-ONLY-TREC-QUERIES        |       0,1955 |        0,2079 |      0,1136 |       0,1545 |
-| LDM [d]      | LMD-EXTRACTED-ONLY-ALL-QUERIES   |       0,1481 |        0,1624 |      0,0799 |       0,0992 |
-| LDM [d]      | LMD-EXTRACTED-ONLY-SYN-QUERIES   |       0,0972 |        0,1028 |      0,0503 |       0,0621 |
-| LDM [d]      | LMD-EXTRACTED-ONLY-TREC-QUERIES  |       0,0508 |        0,0596 |      0,0297 |       0,0371 |
-| LDM          | LMD-META+EXTRACTED-ALL-QUERIES   |       0,2775 |        0,2997 |      0,1590 |       0,1952 |
-| LDM          | LMD-META+EXTRACTED-SYN-QUERIES   |       0,1764 |        0,1850 |      0,1028 |       0,1236 |
-| LDM          | LMD-META+EXTRACTED-TREC-QUERIES  |       0,1012 |        0,1147 |      0,0562 |       0,0715 |
-| LDM [m]      | LMD-META-ONLY-ALL-QUERIES        |       0,4538 |        0,4699 |      0,2679 |       0,3446 |
-| LDM [m]      | LMD-META-ONLY-SYN-QUERIES        |       0,2599 |        0,2619 |      0,1512 |       0,1905 |
+| BM25 [d]     | BM25-EXTRACTED-ONLY-ALL-QUERIES  |       0,1128 |        0,1223 |      0,0666 |       0,0780 |
+| BM25 [d]     | BM25-EXTRACTED-ONLY-SYN-QUERIES  |       0,0701 |        0,0767 |      0,0393 |       0,0468 |
+| BM25 [d]     | BM25-EXTRACTED-ONLY-TREC-QUERIES |       0,0427 |        0,0456 |      0,0272 |       0,0312 |
+| BM25         | BM25-META+EXTRACTED-ALL-QUERIES  |       0,4673 |        0,4966 |      0,2642 |       0,3525 |
+| BM25         | BM25-META+EXTRACTED-SYN-QUERIES  |       0,2778 |        0,2859 |      0,1558 |       0,2025 |
+| BM25         | BM25-META+EXTRACTED-TREC-QUERIES |       0,1902 |        0,2110 |      0,1088 |       0,1504 |
+| BM25 [m]     | BM25-META-ONLY-ALL-QUERIES       |       0,5055 |        0,5222 |      0,2865 |       0,3820 |
+| BM25 [m]     | BM25-META-ONLY-SYN-QUERIES       |       0,2993 |        0,2994 |      0,1678 |       0,2184 |
+| BM25 [m]     | BM25-META-ONLY-TREC-QUERIES      |       0,2062 |        0,2228 |      0,1187 |       0,1637 |
+| TF-IDF [d]   | CS-EXTRACTED-ONLY-ALL-QUERIES    |       0,0822 |        0,0935 |      0,0445 |       0,0555 |
+| TF-IDF [d]   | CS-EXTRACTED-ONLY-SYN-QUERIES    |       0,0500 |        0,0575 |      0,0248 |       0,0327 |
+| TF-IDF [d]   | CS-EXTRACTED-ONLY-TREC-QUERIES   |       0,0322 |        0,0360 |      0,0197 |       0,0228 |
+| TF-IDF       | CS-META+EXTRACTED-ALL-QUERIES    |       0,4761 |        0,4989 |      0,2693 |       0,3634 |
+| TF-IDF       | CS-META+EXTRACTED-SYN-QUERIES    |       0,2726 |        0,2789 |      0,1495 |       0,1997 |
+| TF-IDF       | CS-META+EXTRACTED-TREC-QUERIES   |       0,2036 |        0,2200 |      0,1198 |       0,1637 |
+| TF-IDF [m]   | CS-META-ONLY-ALL-QUERIES         |       0,4602 |        0,4744 |      0,2584 |       0,3439 |
+| TF-IDF [m]   | CS-META-ONLY-SYN-QUERIES         |       0,2644 |        0,2662 |      0,1447 |       0,1892 |
+| TF-IDF [m]   | CS-META-ONLY-TREC-QUERIES        |       0,1958 |        0,2082 |      0,1137 |       0,1547 |
+| LDM [d]      | LMD-EXTRACTED-ONLY-ALL-QUERIES   |       0,0996 |        0,1142 |      0,0592 |       0,0707 |
+| LDM [d]      | LMD-EXTRACTED-ONLY-SYN-QUERIES   |       0,0646 |        0,0732 |      0,0374 |       0,0442 |
+| LDM [d]      | LMD-EXTRACTED-ONLY-TREC-QUERIES  |       0,0349 |        0,0409 |      0,0219 |       0,0265 |
+| LDM          | LMD-META+EXTRACTED-ALL-QUERIES   |       0,2173 |        0,2403 |      0,1289 |       0,1571 |
+| LDM          | LMD-META+EXTRACTED-SYN-QUERIES   |       0,1456 |        0,1539 |      0,0875 |       0,1036 |
+| LDM          | LMD-META+EXTRACTED-TREC-QUERIES  |       0,0717 |        0,0864 |      0,0414 |       0,0536 |
+| LDM [m]      | LMD-META-ONLY-ALL-QUERIES        |       0,4533 |        0,4695 |      0,2677 |       0,3443 |
+| LDM [m]      | LMD-META-ONLY-SYN-QUERIES        |       0,2593 |        0,2614 |      0,1511 |       0,1903 |
 | LDM [m]      | LMD-META-ONLY-TREC-QUERIES       |       0,1939 |        0,2081 |      0,1167 |       0,1540 |
